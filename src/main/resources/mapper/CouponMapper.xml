@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.wrokproject.mapper.CouponMapper">
+    <!--批量发券-->
+    <insert id="insertCouponBatch" parameterType="java.util.List">
+        insert into t_coupon(coupon_seq, user_phone, template_seq, create_time, update_time)
+        values
+        <foreach collection="couponBatch" item="coupon" separator=",">
+            (
+            #{coupon.couponSeq},
+            #{coupon.userPhone},
+            #{coupon.templateSeq},
+            now(),
+            now()
+            )
+        </foreach>
+    </insert>
+</mapper>
+
+

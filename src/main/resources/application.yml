@@ -1,0 +1,36 @@
+server:
+  port: 2023
+
+
+
+core:
+  pool:
+    size: 5 #核心线程数
+
+max:
+  pool:
+    size: 10 #最大线程数
+
+keep:
+  alive:
+    time: 60 #活跃时间 单位秒
+
+blocking:
+  deque: 1000 #允许最大等待数
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://#####/vv_work?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    username: ###
+    password: ###
+
+  servlet:
+    multipart:
+      max-file-size: 10MB  # 设置单个文件最大大小为10MB
+      max-request-size: 100MB  # 设置多个文件大小为100MB
+mybatis:
+  mapper-locations: classpath*:mapper/*.xml
+
+
+per:
+  total: 3000 #批量提交数据大小
