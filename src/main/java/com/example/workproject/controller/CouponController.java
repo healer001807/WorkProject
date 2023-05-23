@@ -31,4 +31,19 @@ public class CouponController {
         return couponService.sendCoupon(multipartFile);
     }
 
+    // 导出用户发券信息 模拟百万数据
+    // job
+
+    /***
+     * @description 导出发券数据
+     * @author kangwei
+     * @date 2023-5-22
+     * @param
+     @return java.lang.String
+     */
+    public String exportCoupon() {
+        // 直接导出全部
+        return  couponService.exportCoupon();
+    }
+
 }

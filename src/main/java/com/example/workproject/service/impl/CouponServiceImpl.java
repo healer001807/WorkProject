@@ -1,6 +1,8 @@
 package com.example.workproject.service.impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.example.workproject.mapper.CouponMapper;
+import com.example.workproject.pojo.UserBoundCouponDTO;
 import com.example.workproject.service.CouponService;
 import com.example.workproject.utils.ReadFileUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +33,9 @@ public class CouponServiceImpl implements CouponService {
     @Value("${per.total}")
     private Integer perTotal; // 每次执行数据
 
+    @Value("${sheet.size}")
+    private Integer sheetSize; // 每页显示数
+
     @Override
     public String sendCoupon(MultipartFile multipartFile) {
         String resp = "{\"code\":\"999999\"}"; // todo 后续统一
@@ -58,6 +63,50 @@ public class CouponServiceImpl implements CouponService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /***
+     * @description 导出用户发券数据
+     * @author kangwei
+     * @date 2023-5-22
+     @return void
+     */
+    @Override
+    public String exportCoupon() {
+        String resp = "{\"code\":\"999999\"}"; // todo 后续统一
+        // 1.向job表中插入一条导出数据的消息
+        // 2.插入成功，返回成功，否则返回失败
+        return resp;
+    }
+
+    /**
+     * 执行数据导出操作
+     *
+     * @return
+     */
+    @Override
+    public String doExportCoupon() {
+        // 分页读取数据
+        // 1.查询总数据量
+         int total = couponMapper.selectTotal();
+        // 2.数据量大，使用多个sheet total 100 20 5
+        int sheetCount = total % sheetSize == 0 ? total / sheetSize : total / sheetSize + 1;
+        // 3. 分批
+        String fileName = "";
+        for (int i = 0; i < sheetCount; i++) {
+//            todo
+            int startPageNo = i * (sheetSize / perTotal) + 1; // 0*(20/10)+1 1
+            int endPageNo = (i + 1) * (sheetSize / perTotal); // (0+1)*2 2
+            // EasyExcel.write(fileName, UserBoundCouponDTO.class).sheet("模板").doWrite(couponMapper.selectCouponList(startPageNo, endPageNo));
+        }
+//        List<Callable<List<UserBoundCouponDTO>>> taskList = new LinkedList<>();
+//        for (int i = 0; i < sheetCount; i++) {
+//            List<UserBoundCouponDTO> userBoundCouponDTOS = couponMapper.selectCouponList(i * pageSize, pageSize);
+//            //
+//        }
+
+
+        return null;
     }
 
     /***

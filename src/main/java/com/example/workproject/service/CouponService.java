@@ -18,4 +18,20 @@ public interface CouponService {
      **/
 
     String sendCoupon(MultipartFile multipartFile);
+
+    /***
+     * @description 导出用户发券数据
+     * @author kangwei
+     * @date 2023-5-22
+     * @param []
+     @return void
+     */
+    String exportCoupon();
+
+    /**
+     * 执行数据导出操作
+     *
+     * @return
+     */
+    String doExportCoupon();
 }
