@@ -41,9 +41,10 @@ public class CouponController {
      * @param
      @return java.lang.String
      */
+    @GetMapping("exportCoupon")
     public String exportCoupon() {
         // 直接导出全部
-        return  couponService.exportCoupon();
+        return couponService.exportCoupon();
     }
 
 }

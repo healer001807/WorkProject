@@ -18,4 +18,15 @@ public class UserBoundCouponDTO {
     private String couponId;
     private Date createTime;
     private Date updateTime;
+
+    @Override
+    public String toString() {
+        return "UserBoundCouponDTO{" +
+                "userCouponId='" + userCouponId + '\'' +
+                ", userPhone='" + userPhone + '\'' +
+                ", couponId='" + couponId + '\'' +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
+    }
 }

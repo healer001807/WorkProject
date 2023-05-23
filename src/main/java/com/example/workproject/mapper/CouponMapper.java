@@ -1,9 +1,12 @@
 package com.example.workproject.mapper;
 
+import com.example.workproject.pojo.UserBoundCouponDTO;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * @author kw
@@ -23,4 +26,26 @@ public interface CouponMapper {
      **/
 
     Integer insertCouponBatch(List<Map<String, Object>> couponBatch);
+
+    /***
+     * @description 查询用户绑定券总数
+     * @param
+     * @return int
+     * @author
+     * @date 2023/5/23
+     **/
+
+    int selectTotal();
+
+    /***
+     * @description 分页查询用户绑券
+     * @param startPageNo, perTotal
+     * @return java.util.List<com.example.workproject.pojo.UserBoundCouponDTO>
+     * @author
+     * @date 2023/5/23
+     **/
+
+    List<UserBoundCouponDTO> selectCouponList(int startPageNo, int perTotal);
+
+
 }

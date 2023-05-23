@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.workproject.mapper.TaskMapper">
+
+    <!--插入一条导出计划-->
+    <insert id="insertTask" parameterType="com.example.workproject.pojo.TaskDTO">
+        insert into t_export_task(task_seq, task_type, create_time, update_time)
+        VALUES (#{taskSeq}, #{taskType}, now(), now())
+    </insert>
+
+</mapper>
+
+
