@@ -19,7 +19,7 @@
         </foreach>
     </insert>
     <!--插入一条优惠券绑定信息导出计划-->
-    <insert id="insertCouponTask" parameterType="com.example.workproject.pojo.TaskDTO">
+    <insert id="insertCouponTask" parameterType="com.example.workproject.pojo.dto.TaskDTO">
         insert into vv_work.t_export_task(task_seq, task_type, create_time, update_time)
         VALUES (#{taskSeq}, #{taskType}, now(), now())
     </insert>
@@ -31,7 +31,7 @@
     </select>
 
     <!--用户优惠券基本映射-->
-    <resultMap id="selectCouponMap" type="com.example.workproject.pojo.UserBoundCouponDTO">
+    <resultMap id="selectCouponMap" type="com.example.workproject.pojo.dto.UserBoundCouponDTO">
         <id column="coupon_seq" property="userCouponId"/>
         <result column="user_phone" property="userPhone"/>
         <result column="template_seq" property="couponId"/>
@@ -40,8 +40,8 @@
 
     <!--分页查询用户绑券-->
     <select id="selectCouponList" parameterType="int" resultMap="selectCouponMap">
-        select coupon_seq, user_phone, template_seq, create_time
-        from vv_work.t_coupon limit #{startPageNo},#{perTotal}
+        select coupon_seq, user_phone, template_seq, create_time,update_time
+        from vv_work.t_coupon limit #{startPageNo},#{pageSize}
     </select>
 </mapper>
 

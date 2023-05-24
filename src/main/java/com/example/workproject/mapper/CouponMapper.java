@@ -1,12 +1,10 @@
 package com.example.workproject.mapper;
 
-import com.example.workproject.pojo.UserBoundCouponDTO;
+import com.example.workproject.pojo.dto.UserBoundCouponDTO;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * @author kw
@@ -39,13 +37,13 @@ public interface CouponMapper {
 
     /***
      * @description 分页查询用户绑券
-     * @param startPageNo, perTotal
+     * @param startPageNo, pageSize
      * @return java.util.List<com.example.workproject.pojo.UserBoundCouponDTO>
      * @author
      * @date 2023/5/23
      **/
 
-    List<UserBoundCouponDTO> selectCouponList(int startPageNo, int perTotal);
+    List<UserBoundCouponDTO> selectCouponList(int startPageNo, int pageSize);
 
 
 }

@@ -1,7 +1,7 @@
 package com.example.workproject;
 
 import com.example.workproject.mapper.CouponMapper;
-import com.example.workproject.pojo.UserBoundCouponDTO;
+import com.example.workproject.pojo.dto.UserBoundCouponDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

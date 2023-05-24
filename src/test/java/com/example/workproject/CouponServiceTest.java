@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.IOException;
+
 /**
  * @author kw
  * @program WorkProject
@@ -19,7 +21,16 @@ public class CouponServiceTest {
     private CouponService couponService;
 
     @Test
-    private void exportCoupon() {
+    public void exportCoupon() {
+        // 测插入导出流水
         couponService.exportCoupon();
     }
+
+    @Test
+    public void doExportCoupon() throws IOException {
+        String doExportCoupon = couponService.doExportCoupon();
+        System.out.println(doExportCoupon);
+    }
+
+
 }

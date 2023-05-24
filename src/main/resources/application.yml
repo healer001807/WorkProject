@@ -36,4 +36,12 @@ per:
   total: 3000 #批量提交数据大小
 
 sheet:
-  size: 1000 #每次查询数量
+  size: 10000 #每个sheet大小
+
+#七牛云OSS
+oss:
+  accesskey:  #公钥
+  secretKey: #密钥
+  bucketName: #存储空间
+  path: #域名
+  documentName: #文件夹 非必须

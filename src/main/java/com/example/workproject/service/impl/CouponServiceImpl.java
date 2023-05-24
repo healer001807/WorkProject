@@ -1,20 +1,29 @@
 package com.example.workproject.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.write.metadata.WriteSheet;
+import com.example.workproject.enums.TaskEnum;
 import com.example.workproject.mapper.CouponMapper;
 import com.example.workproject.mapper.TaskMapper;
-import com.example.workproject.pojo.TaskDTO;
-import com.example.workproject.pojo.UserBoundCouponDTO;
+import com.example.workproject.pojo.dto.TaskDTO;
+import com.example.workproject.pojo.dto.UserBoundCouponDTO;
+import com.example.workproject.pojo.vo.CouponEasyExcelVO;
 import com.example.workproject.service.CouponService;
 import com.example.workproject.utils.DTimeUtils;
 import com.example.workproject.utils.ReadFileUtils;
+import com.example.workproject.utils.UUIDUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -82,6 +91,8 @@ public class CouponServiceImpl implements CouponService {
         String resp = "{\"code\":\"999999\"}"; // todo 后续统一
         // 1.向job表中插入一条导出数据的消息
         TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setTaskSeq(UUIDUtils.getUUID()); // 流水号
+        taskDTO.setTaskType(TaskEnum.NOT_EXECUTED.getStatus()); // 初始化 0-未执行
         int row = taskMapper.insertTask(taskDTO);
         if (row <= 0) {
             return resp;
@@ -95,39 +106,40 @@ public class CouponServiceImpl implements CouponService {
      * 执行数据导出操作
      * int startPageNo = i * (sheetSize / perTotal) + 1; // 0*(20/10)+1 1
      * int endPageNo = (i + 1) * (sheetSize / perTotal); // (0+1)*2 2
+     * 23秒导出10000数据 -- 效率慢 后续优化
      *
      * @return
      */
     @Override
-    public String doExportCoupon() {
+    public String doExportCoupon() throws IOException {
         String resp = "{\"code\":\"999999\",\"filePath\":\"\"}"; // todo 后续统一
         long startTime = System.currentTimeMillis();
         // 分页读取数据
         // 1.查询总数据量
         int total = couponMapper.selectTotal();
-        // 2.数据量大，使用多个sheet total 100 20 5
+        // 2.数据量大，使用多个sheet
         int sheetCount = total % sheetSize == 0 ? total / sheetSize : total / sheetSize + 1;
-        // 3. 分批
-        String filePath = "";
+        // 3.文件名 todo
+        String filePath = "D:\\study\\" + DTimeUtils.getFileDateTime() + ".xlsx";
+        File file = new File(filePath);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        // 3.分批
+        ExcelWriter excelWriter = EasyExcel.write(filePath, CouponEasyExcelVO.class).build();
         for (int i = 0; i < sheetCount; i++) {
-            // 文件名 todo 后续改造
-            filePath = "D:\\study" + DTimeUtils.getFileDateTime() + ".xlsx";
-            File file = new File(filePath);
-            if (!file.exists()) {
-                file.mkdir();
-            }
-//            todo perTotal =10
-            // 0,10 10,10
+            WriteSheet writeSheet = EasyExcel.writerSheet("导出优惠券" + (i)).build();
             int selectCount = sheetSize % perTotal == 0 ? sheetSize / perTotal : sheetSize / perTotal + 1;
             for (int i1 = 0; i1 < selectCount; i1++) {
                 // 计算开始索引
-                int startPageNo = (i1 - 1) * perTotal;
+                int startPageNo = (i1) * perTotal;
                 // 写excel
-                EasyExcel.write(filePath, UserBoundCouponDTO.class).sheet("sheet" + (i + 1)).
-                        doWrite(couponMapper.selectCouponList(startPageNo, perTotal));
+                List<CouponEasyExcelVO> couponEasyExcelVOS = BeanUtil.copyToList(couponMapper.selectCouponList(startPageNo, perTotal), CouponEasyExcelVO.class);
+                excelWriter.write(couponEasyExcelVOS, writeSheet);
             }
         }
-        resp = "{\"code\":\"000000\",\"filePath\":\"" + filePath + "\"}";
+        excelWriter.close(); // 关闭easyExcel流
+        resp = "{\"code\":\"0000\",\"filePath\":\"" + filePath + "\"}";
         log.info("数据导出消费时间" + (System.currentTimeMillis() - startTime) / 1000 + "秒");
         return resp;
     }

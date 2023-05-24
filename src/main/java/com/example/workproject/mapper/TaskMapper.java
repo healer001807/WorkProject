@@ -1,6 +1,6 @@
 package com.example.workproject.mapper;
 
-import com.example.workproject.pojo.TaskDTO;
+import com.example.workproject.pojo.dto.TaskDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

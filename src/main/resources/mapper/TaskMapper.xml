@@ -6,7 +6,7 @@
 <mapper namespace="com.example.workproject.mapper.TaskMapper">
 
     <!--插入一条导出计划-->
-    <insert id="insertTask" parameterType="com.example.workproject.pojo.TaskDTO">
+    <insert id="insertTask" parameterType="com.example.workproject.pojo.dto.TaskDTO">
         insert into t_export_task(task_seq, task_type, create_time, update_time)
         VALUES (#{taskSeq}, #{taskType}, now(), now())
     </insert>

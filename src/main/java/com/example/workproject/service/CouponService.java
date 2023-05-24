@@ -2,6 +2,8 @@ package com.example.workproject.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 /**
  * @author kw
  * @program WrokProject
@@ -33,5 +35,5 @@ public interface CouponService {
      *
      * @return
      */
-    String doExportCoupon();
+    String doExportCoupon() throws IOException;
 }
