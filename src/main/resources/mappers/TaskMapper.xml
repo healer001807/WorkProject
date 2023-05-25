@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vv.mapper.TaskMapper">
+
+    <!--插入一条导出计划-->
+    <insert id="insertTask" parameterType="com.vv.pojo.dto.TaskDTO">
+        insert into t_export_task(task_seq, task_type, create_time, update_time)
+        VALUES (#{taskSeq}, #{taskType}, now(), now())
+    </insert>
+
+    <!--更新任务执行状态-->
+    <update id="updateTask" parameterType="com.vv.pojo.dto.TaskDTO">
+        update t_export_task
+        set update_time = now(),
+            task_status = #{taskStatus}
+        where task_seq = #{taskSeq}
+    </update>
+    <resultMap id="selectTaskDTO" type="com.vv.pojo.dto.TaskDTO">
+        <id property="taskSeq" column="task_seq"/>
+        <result property="taskType" column="task_type"/>
+        <result property="taskStatus" column="task_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <!--根据任务类型查询任务流水-->
+    <select id="selectTaskByType" parameterType="string" resultMap="selectTaskDTO">
+        select task_seq, task_type, task_status, create_time, update_time
+        from t_export_task
+        where task_type = #{taskType}
+    </select>
+
+    <!--根据任务类型和执行状态查询任务流水-->
+    <select id="selectTaskList" parameterType="com.vv.pojo.dto.TaskDTO" resultMap="selectTaskDTO">
+        select task_seq, task_type, task_status
+        from t_export_task
+        where task_type = #{taskType}
+          and task_status = #{taskStatus}
+    </select>
+
+</mapper>
+
+
