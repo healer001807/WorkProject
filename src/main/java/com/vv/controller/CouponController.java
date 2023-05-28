@@ -1,6 +1,7 @@
 package com.vv.controller;
 
 import com.vv.service.CouponService;
+import com.vv.utils.ResUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,12 +28,11 @@ public class CouponController {
      **/
 
     @PostMapping("sendCoupon")
-    public String sendCoupon(@RequestParam("file") MultipartFile multipartFile) {
+    public ResUtils sendCoupon(@RequestParam("file") MultipartFile multipartFile) {
         return couponService.sendCoupon(multipartFile);
     }
 
     // 导出用户发券信息 模拟百万数据
-    // job
 
     /***
      * @description 导出发券数据
@@ -42,7 +42,7 @@ public class CouponController {
      @return java.lang.String
      */
     @GetMapping("exportCoupon")
-    public String exportCoupon() {
+    public ResUtils exportCoupon() {
         // 直接导出全部
         return couponService.exportCoupon();
     }

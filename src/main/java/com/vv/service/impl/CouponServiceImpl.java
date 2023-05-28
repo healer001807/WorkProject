@@ -10,10 +10,7 @@ import com.vv.mapper.TaskMapper;
 import com.vv.pojo.dto.TaskDTO;
 import com.vv.pojo.vo.CouponEasyExcelVO;
 import com.vv.service.CouponService;
-import com.vv.utils.DTimeUtils;
-import com.vv.utils.OSSUploadUtils;
-import com.vv.utils.ReadFileUtils;
-import com.vv.utils.UUIDUtils;
+import com.vv.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,17 +54,17 @@ public class CouponServiceImpl implements CouponService {
 
 
     @Override
-    public String sendCoupon(MultipartFile multipartFile) {
+    public ResUtils sendCoupon(MultipartFile multipartFile) {
         String resp = "{\"code\":\"999999\"}"; // todo 后续统一
         // 1.非空校验
         if (null == multipartFile) {
-            return resp;
+            return ResUtils.failed("文件为空,上传失败");
         }
         // 2.读取文件名
         String originalFilename = multipartFile.getOriginalFilename();
         String fileSuffix = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
         if (!"csv".equals(fileSuffix)) {
-            return resp;
+            return ResUtils.failed("文件类型异常");
         }
         // 3.解析文件 todo 如何减少读文件时间
         try {
@@ -77,8 +74,7 @@ public class CouponServiceImpl implements CouponService {
             runCoupon(mobilePhones.stream().toList());
 
             // 5.返回成功
-            resp = "{\"code\":\"000000\"}";
-            return resp;
+            return ResUtils.success("文件上传成功");
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -92,19 +88,17 @@ public class CouponServiceImpl implements CouponService {
      @return void
      */
     @Override
-    public String exportCoupon() {
-        String resp = "{\"code\":\"999999\"}"; // todo 后续统一
+    public ResUtils exportCoupon() {
         // 1.向job表中插入一条导出数据的消息
         TaskDTO taskDTO = new TaskDTO();
         taskDTO.setTaskSeq(UUIDUtils.getUUID()); // 流水号
         taskDTO.setTaskType(TaskEnum.NOT_EXECUTED.getStatus()); // 初始化 0-未执行
         int row = taskMapper.insertTask(taskDTO);
         if (row <= 0) {
-            return resp;
+            return ResUtils.failed("添加流失败");
         }
         // 2.插入成功，返回成功，否则返回失败
-        resp = "{\"code\":\"000000\"}";
-        return resp;
+        return ResUtils.success("添加导出流水成功");
     }
 
     /**
@@ -116,8 +110,7 @@ public class CouponServiceImpl implements CouponService {
      * @return
      */
     @Override
-    public String doExportCoupon() throws IOException {
-        String resp = "{\"code\":\"999999\",\"filePath\":\"\"}"; // todo 后续统一
+    public ResUtils doExportCoupon() throws IOException {
         long startTime = System.currentTimeMillis();
         // 分页读取数据
         // 1.查询总数据量
@@ -125,7 +118,8 @@ public class CouponServiceImpl implements CouponService {
         // 2.数据量大，使用多个sheet
         int sheetCount = total % sheetSize == 0 ? total / sheetSize : total / sheetSize + 1;
         // 3.文件名 todo
-        String filePath = "D:\\study\\" + DTimeUtils.getFileDateTime() + ".xlsx";
+        String fileName = DTimeUtils.getFileDateTime() + ".xlsx";
+        String filePath = "D:\\study\\" + fileName;
         File file = new File(filePath);
         if (!file.exists()) {
             file.createNewFile();
@@ -144,19 +138,17 @@ public class CouponServiceImpl implements CouponService {
             }
         }
         excelWriter.close(); // 关闭easyExcel流
-        resp = "{\"code\":\"0000\",\"filePath\":\"" + filePath + "\"}";
         log.info("数据导出消费时间" + (System.currentTimeMillis() - startTime) / 1000 + "秒");
-        return resp;
+        return ResUtils.success("数据导出成功", fileName);
     }
 
     @Override
-    public String uploadExcel(String fileName) {
+    public ResUtils uploadExcel(String fileName) {
         try {
-            String resp = "{\"code\":\"000000\",\"filePath\":\"\"}"; // todo 后续统一
             // 上传
             String uploadResp = ossUploadUtils.upload(fileName, uploadPath + fileName);
-            log.info("文件伤处成功" + uploadResp);
-            return resp;
+            log.info("文件发生OSS成功" + uploadResp);
+            return ResUtils.success("文件已上传至OSS服务", uploadResp);
         } catch (Exception e) {
             log.error("excel上传异常" + e);
             throw new RuntimeException(e);

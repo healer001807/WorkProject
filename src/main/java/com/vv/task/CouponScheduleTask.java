@@ -7,6 +7,7 @@ import com.vv.enums.TaskEnum;
 import com.vv.pojo.dto.TaskDTO;
 import com.vv.service.CouponService;
 import com.vv.service.TaskService;
+import com.vv.utils.ResUtils;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -53,15 +54,14 @@ public class CouponScheduleTask {
             taskDTO1.setTaskStatus(TaskEnum.EXECUTING.getStatus()); // 执行中
             taskService.updateTask(taskDTO1);
             // 2.1.如果查询成功，则执行导出任务
-            String resp = null;
+            ResUtils resUtils = null;
             try {
-                resp = couponService.doExportCoupon();
+                resUtils = couponService.doExportCoupon();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            JSONObject parseObj = JSONUtil.parseObj(resp);
             // 2.2.如果导出失败，更新任务流水表
-            if (!"0000".equals(parseObj.get("code"))) {
+            if (2001 != resUtils.getCode()) {
                 taskDTO1.setTaskStatus(TaskEnum.FAIL.getStatus());
                 taskService.updateTask(taskDTO1);
                 return;
@@ -69,13 +69,12 @@ public class CouponScheduleTask {
             taskDTO1.setTaskStatus(TaskEnum.SUCCESS.getStatus());  // 导出成功
             taskService.updateTask(taskDTO1);
             // 导出成功 更新流水,excel上传到OSS
-            String uploadedResp = couponService.uploadExcel(parseObj.getStr("fileName"));
-            parseObj = JSONUtil.parseObj(uploadedResp);
+            String fileName = (String) resUtils.getData();
+            resUtils = couponService.uploadExcel(fileName);
             // 上传失败，可在上传一次 或者也是搞个流水
-            if (!"0000".equals(parseObj.get("code"))) {
-                uploadedResp = couponService.uploadExcel(parseObj.getStr("fileName"));
-                parseObj = JSONUtil.parseObj(uploadedResp);
-                if (!"0000".equals(parseObj.get("code"))) {
+            if (2001 != resUtils.getCode()) {
+                resUtils = couponService.uploadExcel(fileName);
+                if (2001 != resUtils.getCode()) {
                     return;
                 }
             }

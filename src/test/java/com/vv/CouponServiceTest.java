@@ -1,6 +1,7 @@
 package com.vv;
 
 import com.vv.service.CouponService;
+import com.vv.utils.ResUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,12 +29,12 @@ public class CouponServiceTest {
 
     @Test
     public void doExportCoupon() throws IOException {
-        String doExportCoupon = couponService.doExportCoupon();
+        ResUtils doExportCoupon = couponService.doExportCoupon();
         System.out.println(doExportCoupon);
     }
 
     @Test
-    public void uploadTest(){
+    public void uploadTest() {
         couponService.uploadExcel("20230524210223.xlsx");
     }
 

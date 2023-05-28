@@ -1,5 +1,6 @@
 package com.vv.service;
 
+import com.vv.utils.ResUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ public interface CouponService {
      * @date 2023/5/20
      **/
 
-    String sendCoupon(MultipartFile multipartFile);
+    ResUtils sendCoupon(MultipartFile multipartFile);
 
     /***
      * @description 导出用户发券数据
@@ -28,14 +29,14 @@ public interface CouponService {
      * @param []
      @return void
      */
-    String exportCoupon();
+    ResUtils exportCoupon();
 
     /**
      * 执行数据导出操作
      *
      * @return
      */
-    String doExportCoupon() throws IOException;
+    ResUtils doExportCoupon() throws IOException;
 
     /***
      * @description 上传excel
@@ -45,5 +46,5 @@ public interface CouponService {
      * @date 2023/5/25
      **/
 
-    String uploadExcel(String fileName);
+    ResUtils uploadExcel(String fileName);
 }
