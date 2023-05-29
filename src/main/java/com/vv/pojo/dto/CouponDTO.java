@@ -17,7 +17,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "优惠券信息")
+@Schema(name = "couponDTO",description = "优惠券信息")
 public class CouponDTO {
 
     @Schema(name = "couponId", description = "优惠券id")

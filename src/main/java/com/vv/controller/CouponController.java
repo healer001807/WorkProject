@@ -32,8 +32,6 @@ public class CouponController {
         return couponService.sendCoupon(multipartFile);
     }
 
-    // 导出用户发券信息 模拟百万数据
-
     /***
      * @description 导出发券数据
      * @author kangwei

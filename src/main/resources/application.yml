@@ -20,9 +20,9 @@ blocking:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://#####/vv_work?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
-    username: ###
-    password: ###
+    url: jdbc:mysql://124.223.162.117:3306/vv_work?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: jali96
 
   servlet:
     multipart:
