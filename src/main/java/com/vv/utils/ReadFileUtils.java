@@ -59,7 +59,7 @@ public class ReadFileUtils {
         BufferedReader reader = IoUtil.getReader(new BufferedReader(new InputStreamReader(multipartFile.getInputStream())));
         List<String> dataList = reader.lines().parallel().toList();
         collection.addAll(dataList);
-        System.out.println("-----执行结束-----" + (System.currentTimeMillis() - start) + "ms");
+        log.info("-----执行结束-----" + (System.currentTimeMillis() - start) + "ms");
         return collection;
     }
 

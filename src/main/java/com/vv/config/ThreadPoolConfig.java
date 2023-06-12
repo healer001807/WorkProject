@@ -1,5 +1,6 @@
 package com.vv.config;
 
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -13,19 +14,11 @@ import java.util.concurrent.*;
  * @description 线程池
  * @create 2023 - 05 - 20 15:03
  **/
-@Component
+//@Component
 public class ThreadPoolConfig {
 
-
-    @Value("${core.pool.size}")
-    private int corePoolSize; // 核心线程数
-    @Value("${max.pool.size}")
-    private int maxPoolSize; // 最大线程数
-
-    @Value("${keep.alive.time}")
-    private long keepAliveTime; // 活跃时间
-    @Value("${blocking.deque}")
-    private int blockingDeque; // 允许等待最大数
+//    @Resource
+    private ThreadPoolProperties properties;
 
 
     /***
@@ -36,15 +29,15 @@ public class ThreadPoolConfig {
      * @date 2023/5/20
      **/
 
-    @Bean
+//    @Bean
     public ThreadPoolExecutor threadPoolExecutor() {
         return
                 new ThreadPoolExecutor(
-                        corePoolSize,
-                        maxPoolSize,
-                        keepAliveTime,
+                        properties.getCorePoolSize(),
+                        properties.getMaxPoolSize(),
+                        properties.getKeepAliveTime(),
                         TimeUnit.SECONDS,
-                        new LinkedBlockingDeque<>(blockingDeque),
+                        new LinkedBlockingDeque<>(properties.getBlockingDeque()),
                         Executors.defaultThreadFactory(), // 线程工厂
                         new ThreadPoolExecutor.AbortPolicy()  // 拒绝策略
                 );
@@ -61,9 +54,9 @@ public class ThreadPoolConfig {
 //    @Bean
     public ThreadPoolTaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-        taskExecutor.setCorePoolSize(corePoolSize);
-        taskExecutor.setMaxPoolSize(maxPoolSize);
-        taskExecutor.setKeepAliveSeconds((int) keepAliveTime);
+        taskExecutor.setCorePoolSize(properties.getCorePoolSize());
+        taskExecutor.setMaxPoolSize(properties.getMaxPoolSize());
+        taskExecutor.setKeepAliveSeconds((int) properties.getKeepAliveTime());
 //        taskExecutor.setAllowCoreThreadTimeOut(true);
         taskExecutor.setQueueCapacity(10000); // todo
         taskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());

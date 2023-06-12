@@ -55,13 +55,13 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public ResUtils sendCoupon(MultipartFile multipartFile) {
-        String resp = "{\"code\":\"999999\"}"; // todo 后续统一
         // 1.非空校验
         if (null == multipartFile) {
             return ResUtils.failed("文件为空,上传失败");
         }
         // 2.读取文件名
         String originalFilename = multipartFile.getOriginalFilename();
+        assert originalFilename != null;
         String fileSuffix = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
         if (!"csv".equals(fileSuffix)) {
             return ResUtils.failed("文件类型异常");
@@ -119,7 +119,7 @@ public class CouponServiceImpl implements CouponService {
         int sheetCount = total % sheetSize == 0 ? total / sheetSize : total / sheetSize + 1;
         // 3.文件名 todo
         String fileName = DTimeUtils.getFileDateTime() + ".xlsx";
-        String filePath = "D:\\study\\" + fileName;
+        String filePath = "D:\\study\\" + fileName;// 这里这样写不行，如果在linux下，就出问题了
         File file = new File(filePath);
         if (!file.exists()) {
             file.createNewFile();
@@ -164,29 +164,31 @@ public class CouponServiceImpl implements CouponService {
      **/
 
     private void runCoupon(List<String> mobilePhones) {
-        // 发券
-        long startTime = System.currentTimeMillis();
-        int total = mobilePhones.size(); // 总数
-        int count = (total + perTotal - 1) / perTotal;
-        List<Callable<Integer>> task = new LinkedList<>();
-        CompletionService completionService = new ExecutorCompletionService(threadPoolExecutor);
-        List<CompletionService> completionServices = new LinkedList<>();
-        for (int i = 0; i < count; i++) {
-            int fromIndex = i * perTotal;
-            int toIndex = Math.min(((i + 1) * perTotal), total);
-            List<Map<String, Object>> couponBatch = mobilePhones.subList(fromIndex, toIndex).stream().map(s -> {
-                Map<String, Object> map = new HashMap<>();
-                map.put("couponSeq", UUID.randomUUID().toString().replaceAll("-", ""));
-                map.put("userPhone", s);
-                map.put("templateSeq", "L00001");
-                return map;
-            }).toList();
+        try {
+            // 发券
+            long startTime = System.currentTimeMillis();
+            int total = mobilePhones.size(); // 总数
+            int count = (total + perTotal - 1) / perTotal;
+            List<Callable<Integer>> task = new LinkedList<>();
+            CompletionService completionService = new ExecutorCompletionService(threadPoolExecutor);
+            List<CompletionService> completionServices = new LinkedList<>();
+            for (int i = 0; i < count; i++) {
+                int fromIndex = i * perTotal;
+                int toIndex = Math.min(((i + 1) * perTotal), total);
+                List<Map<String, Object>> couponBatch = mobilePhones.subList(fromIndex, toIndex).stream().map(s -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("couponSeq", UUID.randomUUID().toString().replaceAll("-", ""));
+                    map.put("userPhone", s);
+                    map.put("templateSeq", "L00001");
+                    return map;
+                }).toList();
 
-            completionService.submit(() -> couponMapper.insertCouponBatch(couponBatch));
-            log.info("线程" + completionService.poll());
-//                completionServices.add(completionService);
-//            task.add(() -> couponMapper.insertCouponBatch(couponBatch));
-        }
+                completionService.submit(() -> couponMapper.insertCouponBatch(couponBatch));
+                // PoolUtils.createAsyncExecutor(() -> couponMapper.insertCouponBatch(couponBatch));
+                log.info("线程" + completionService.poll());
+    //                completionServices.add(completionService);
+    //            task.add(() -> couponMapper.insertCouponBatch(couponBatch));
+            }
 //        for (CompletionService service : completionServices) {
 //            log.info("线程" + service.poll());
 //        }
@@ -197,6 +199,10 @@ public class CouponServiceImpl implements CouponService {
 //            }
 //            log.info("正在退出的线程" + future.get());
 //        }
-        log.info("消费时间为" + (System.currentTimeMillis() - startTime) + "毫秒");
+            log.info("消费时间为" + (System.currentTimeMillis() - startTime) + "毫秒");
+        } catch (Exception e) {
+            // 回滚
+            throw new RuntimeException(e);
+        }
     }
 }
