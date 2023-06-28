@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vv.admin.mapper.CouponMapper">
+    <!--批量发券-->
+    <insert id="insertCouponBatch" parameterType="java.util.List">
+        insert into t_coupon(coupon_seq, user_phone, template_seq, create_time, update_time)
+        values
+        <foreach collection="couponBatch" item="coupon" separator=",">
+            (
+            #{coupon.couponSeq},
+            #{coupon.userPhone},
+            #{coupon.templateSeq},
+            now(),
+            now()
+            )
+        </foreach>
+    </insert>
+    <!--插入一条优惠券绑定信息导出计划-->
+    <insert id="insertCouponTask" parameterType="com.vv.admin.pojo.dto.TaskDTO">
+        insert into vv_work.t_export_task(task_seq, task_type, create_time, update_time)
+        VALUES (#{taskSeq}, #{taskType}, now(), now())
+    </insert>
+
+    <!--查询用户绑定券总数-->
+    <select id="selectTotal" resultType="int">
+        select count(1)
+        from t_coupon
+    </select>
+
+    <!--用户优惠券基本映射-->
+    <resultMap id="selectCouponMap" type="com.vv.admin.pojo.dto.UserBoundCouponDTO">
+        <id column="coupon_seq" property="userCouponId"/>
+        <result column="user_phone" property="userPhone"/>
+        <result column="template_seq" property="couponId"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <!--分页查询用户绑券-->
+    <select id="selectCouponList" parameterType="int" resultMap="selectCouponMap">
+        select coupon_seq, user_phone, template_seq, create_time, update_time
+        from vv_work.t_coupon limit #{startPageNo},#{pageSize}
+    </select>
+</mapper>
+
+

@@ -1,0 +1,42 @@
+server:
+  port: 2023
+
+
+# 线程池配置(驼峰/横杠都可以)
+pool:
+  corePoolSize: 5 #核心线程数
+  maxPoolSize: 10 #最大线程数
+  keepAliveTime: 60 #活跃时间 单位秒
+  blockingDeque: 1000 #允许最大等待数
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://120.48.53.93:3306/vv_work?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: kmg681
+    type: com.alibaba.druid.pool.DruidDataSource
+
+  servlet:
+    multipart:
+      max-file-size: 10MB  # 设置单个文件最大大小为10MB
+      max-request-size: 100MB  # 设置多个文件大小为100MB
+mybatis:
+  mapper-locations: classpath*:mappers/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  type-aliases-package:
+per:
+  total: 3000 #批量提交数据大小
+
+sheet:
+  size: 10000 #每个sheet大小
+
+#七牛云OSS
+oss:
+  accessKey: nSY2Qnw__YcyUqxdtbLXo-ILa5fLYy8KIXVIOLw_ #公钥
+  secretKey: AbYTm9dJ1hO5eztSJP8U0ciVIHNTxtR8U2uYS84C #密钥
+  bucketName: 20230524coupon #存储空间
+#  path: #域名
+  documentName: coupon #文件夹 非必须
+  uploadPath: D:\study\ #/data/coupon
