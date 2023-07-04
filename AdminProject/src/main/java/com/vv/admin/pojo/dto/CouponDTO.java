@@ -1,8 +1,8 @@
 package com.vv.admin.pojo.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +17,9 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "couponDTO",description = "优惠券信息")
+@Builder(toBuilder = true)
+//@Accessors(fluent = true, chain = true) todo 不建议使用
+@Schema(name = "couponDTO", description = "优惠券信息")
 public class CouponDTO {
 
     @Schema(name = "couponId", description = "优惠券id")
@@ -34,4 +36,5 @@ public class CouponDTO {
     private Date createTime;
     @Schema(name = "updateTime", description = "更新时间")
     private Date updateTime;
+
 }
