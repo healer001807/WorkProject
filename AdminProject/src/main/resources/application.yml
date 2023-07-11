@@ -37,6 +37,6 @@ oss:
   accessKey: nSY2Qnw__YcyUqxdtbLXo-ILa5fLYy8KIXVIOLw_ #公钥
   secretKey: AbYTm9dJ1hO5eztSJP8U0ciVIHNTxtR8U2uYS84C #密钥
   bucketName: 20230524coupon #存储空间
-#  path: #域名
+  #  path: #域名
   documentName: coupon #文件夹 非必须
   uploadPath: D:\study\ #/data/coupon
