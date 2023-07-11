@@ -15,8 +15,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class InitAddressRedis {
 
+    // boot3.0不要使用javax下的 @Resource,此注解无法注入，boot3用jakarta包下的 @Resource
     @Autowired
-    private RedisTemplate redisTemplate; // 记录下不要用 @Resource,此注解无法注入，boot3不能用@Resource
+    private RedisTemplate redisTemplate;
 
     /*** 
      * @description 初始化加载地址信息到redis缓存
