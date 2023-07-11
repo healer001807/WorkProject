@@ -1,4 +1,4 @@
-package com.vv.admin.config;
+package com.vv.business.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +14,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
  * @create: 2023-07-11 10:24
  **/
 @Configuration
-public class RedisTemplateConfig {
+public class RedisConfig {
 
 
     /***
