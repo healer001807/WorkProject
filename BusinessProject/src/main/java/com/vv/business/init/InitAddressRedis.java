@@ -1,10 +1,14 @@
 package com.vv.business.init;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.vv.business.mapper.AddressMapper;
+import com.vv.business.pojo.AddressDTO;
+import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @program: WorkProject
@@ -15,8 +19,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class InitAddressRedis {
 
-    @Autowired
-    private RedisTemplate redisTemplate; // 记录下不要用 @Resource,此注解无法注入，boot3不能用@Resource
+    @Resource
+    private RedisTemplate<String, List<AddressDTO>> redisTemplate; // 记录下不要用 @Resource,此注解无法注入，boot3不能用@Resource
+
+    @Resource
+    private AddressMapper addressMapper;
 
     /*** 
      * @description 初始化加载地址信息到redis缓存
@@ -27,8 +34,13 @@ public class InitAddressRedis {
      */
     @PostConstruct
     public void initGetAddress() {
-        // todo 未建立表
-        System.out.println("99999999999999" + redisTemplate);
+        // 查询地址
+        List<AddressDTO> addressDTOS = addressMapper.selectList(null);
+        // 非空判断
+        if (Optional.ofNullable(addressDTOS).isPresent()) {
+            // 查询成功，将地址存入缓存 ,过期时间暂时不设置
+            redisTemplate.opsForValue().set("ADDRESS_", addressDTOS);
+        }
     }
 
 }
