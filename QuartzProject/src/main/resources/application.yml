@@ -1,0 +1,19 @@
+server:
+  port: 8802
+
+spring:
+  application:
+    name: quartz-demo
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://120.48.53.93:3306/vv_work?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: kmg681
+    type: com.alibaba.druid.pool.DruidDataSource
+
+    #quartz
+  quartz:
+    properties:
+      org
+
+
