@@ -2,8 +2,8 @@ package com.vv.quartz.controller;
 
 import com.vv.quartz.pojo.QuartzJobDTO;
 import com.vv.quartz.service.QuartzJobService;
+import com.vv.util.ResUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,9 +29,8 @@ public class QuartzJobController {
      * @return
      */
     @RequestMapping("/addJob")
-    public Object addJob(@RequestBody QuartzJobDTO quartzJobDTO) {
-        quartzJobService.addJob(quartzJobDTO);
-        return HttpStatus.OK;
+    public ResUtils addJob(@RequestBody QuartzJobDTO quartzJobDTO) {
+        return quartzJobService.addJob(quartzJobDTO);
     }
 
     /**
@@ -41,9 +40,9 @@ public class QuartzJobController {
      * @return
      */
     @RequestMapping("/pauseJob")
-    public Object pauseJob(@RequestBody QuartzJobDTO quartzJobDTO) {
-        quartzJobService.pauseJob(quartzJobDTO);
-        return HttpStatus.OK;
+    public ResUtils pauseJob(@RequestBody QuartzJobDTO quartzJobDTO) {
+
+        return quartzJobService.pauseJob(quartzJobDTO);
     }
 
     /**
@@ -53,9 +52,9 @@ public class QuartzJobController {
      * @return
      */
     @RequestMapping("/resumeJob")
-    public Object resumeJob(@RequestBody QuartzJobDTO quartzJobDTO) {
-        quartzJobService.resumeJob(quartzJobDTO);
-        return HttpStatus.OK;
+    public ResUtils resumeJob(@RequestBody QuartzJobDTO quartzJobDTO) {
+
+        return quartzJobService.resumeJob(quartzJobDTO);
     }
 
     /**
@@ -65,9 +64,9 @@ public class QuartzJobController {
      * @return
      */
     @RequestMapping("/runOnce")
-    public Object runOnce(@RequestBody QuartzJobDTO quartzJobDTO) {
-        quartzJobService.runOnce(quartzJobDTO);
-        return HttpStatus.OK;
+    public ResUtils runOnce(@RequestBody QuartzJobDTO quartzJobDTO) {
+
+        return quartzJobService.runOnce(quartzJobDTO);
     }
 
     /**
@@ -77,9 +76,9 @@ public class QuartzJobController {
      * @return
      */
     @RequestMapping("/updateJob")
-    public Object updateJob(@RequestBody QuartzJobDTO quartzJobDTO) {
-        quartzJobService.updateJob(quartzJobDTO);
-        return HttpStatus.OK;
+    public ResUtils updateJob(@RequestBody QuartzJobDTO quartzJobDTO) {
+
+        return quartzJobService.updateJob(quartzJobDTO);
     }
 
     /**
@@ -89,9 +88,9 @@ public class QuartzJobController {
      * @return
      */
     @RequestMapping("/deleteJob")
-    public Object deleteJob(@RequestBody QuartzJobDTO quartzJobDTO) {
-        quartzJobService.deleteJob(quartzJobDTO);
-        return HttpStatus.OK;
+    public ResUtils deleteJob(@RequestBody QuartzJobDTO quartzJobDTO) {
+
+        return quartzJobService.deleteJob(quartzJobDTO);
     }
 
     /**
@@ -100,9 +99,9 @@ public class QuartzJobController {
      * @return
      */
     @RequestMapping("/startAllJobs")
-    public Object startAllJobs() {
-        quartzJobService.startAllJobs();
-        return HttpStatus.OK;
+    public ResUtils startAllJobs() {
+
+        return quartzJobService.startAllJobs();
     }
 
     /**
@@ -111,9 +110,9 @@ public class QuartzJobController {
      * @return
      */
     @RequestMapping("/pauseAllJobs")
-    public Object pauseAllJobs() {
-        quartzJobService.pauseAllJobs();
-        return HttpStatus.OK;
+    public ResUtils pauseAllJobs() {
+
+        return quartzJobService.pauseAllJobs();
     }
 
     /**
@@ -122,9 +121,9 @@ public class QuartzJobController {
      * @return
      */
     @RequestMapping("/resumeAllJobs")
-    public Object resumeAllJobs() {
-        quartzJobService.resumeAllJobs();
-        return HttpStatus.OK;
+    public ResUtils resumeAllJobs() {
+
+        return quartzJobService.resumeAllJobs();
     }
 
     /**
@@ -133,8 +132,8 @@ public class QuartzJobController {
      * @return
      */
     @RequestMapping("/shutdownAllJobs")
-    public Object shutdownAllJobs() {
-        quartzJobService.shutdownAllJobs();
-        return HttpStatus.OK;
+    public ResUtils shutdownAllJobs() {
+
+        return quartzJobService.shutdownAllJobs();
     }
 }

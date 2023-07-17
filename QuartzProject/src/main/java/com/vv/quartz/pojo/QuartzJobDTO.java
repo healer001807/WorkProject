@@ -3,7 +3,6 @@ package com.vv.quartz.pojo;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * @program: WorkProject
@@ -26,7 +25,7 @@ public class QuartzJobDTO implements Serializable {
     /**
      * 任务所属类
      */
-    private String jobClass;
+//    private String jobClass; 废弃
 
     /**
      * 任务调度时间表达式

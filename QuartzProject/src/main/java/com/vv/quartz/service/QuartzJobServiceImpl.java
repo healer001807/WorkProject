@@ -1,11 +1,17 @@
 package com.vv.quartz.service;
 
+import com.vv.exception.BusinessException;
 import com.vv.quartz.pojo.QuartzJobDTO;
-import jakarta.annotation.Resource;
+import com.vv.util.ResUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * @program: WorkProject
@@ -15,10 +21,13 @@ import org.springframework.stereotype.Service;
  **/
 @Slf4j
 @Service
-public class QuartzJobServiceImpl implements QuartzJobService {
+public class QuartzJobServiceImpl implements QuartzJobService, ApplicationContextAware {
 
     @Autowired
     private Scheduler scheduler;
+
+    // 上下文
+    private ApplicationContext applicationContext;
 
     /***
      * @description 添加任务可以传参数
@@ -28,26 +37,30 @@ public class QuartzJobServiceImpl implements QuartzJobService {
      @return void
      */
     @Override
-    public void addJob(QuartzJobDTO quartzJobDTO) {
+    public ResUtils addJob(QuartzJobDTO quartzJobDTO) {
         try {
-            // 启动调度器，默认初始化的时候已经启动
-//            scheduler.start();
-            //构建job信息
-            Class<? extends Job> jobClass = (Class<? extends Job>) Class.forName(quartzJobDTO.getJobClass());
-            JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(quartzJobDTO.getJobName(), quartzJobDTO.getGroupName()).build();
-            //表达式调度构建器(即任务执行的时间)
-            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(quartzJobDTO.getCronExpression());
-            //按新的cronExpression表达式构建一个新的trigger
-            CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(quartzJobDTO.getJobName(), quartzJobDTO.getGroupName()).withSchedule(scheduleBuilder).build();
-            //获得JobDataMap，写入数据
+            Optional.ofNullable(quartzJobDTO).orElseThrow(() -> (new BusinessException("任务不能为空")));
+            String jobName = quartzJobDTO.getJobName();
+            Optional.ofNullable(jobName).orElseThrow(() -> (new BusinessException("任务名不能为空")));
+
+            // 通过jobName获取class
+            Class<? extends Job> jobClass = (Class<? extends Job>) applicationContext.getBean(jobName).getClass();
+            JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobName, quartzJobDTO.getGroupName()).build();
+            // 按新的cronExpression表达式构建一个新的trigger
+            CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(jobName, quartzJobDTO.getGroupName()).withSchedule(CronScheduleBuilder.cronSchedule(quartzJobDTO.getCronExpression()))// 表达式调度构建器(即任务执行的时间)
+                    .build();
+            // 获得JobDataMap，写入数据
             // String param = quartzJobDTO.getParam(); // todo
 //            if (param != null) {
 //                trigger.getJobDataMap().putAll(param);
 //            }
             scheduler.scheduleJob(jobDetail, trigger);
+
         } catch (Exception e) {
             log.error("创建任务失败", e);
+            ResUtils.failed();
         }
+        return ResUtils.success();
     }
 
     /***
@@ -58,12 +71,14 @@ public class QuartzJobServiceImpl implements QuartzJobService {
      @return void
      */
     @Override
-    public void pauseJob(QuartzJobDTO quartzJobDTO) {
+    public ResUtils pauseJob(QuartzJobDTO quartzJobDTO) {
         try {
             JobKey jobKey = new JobKey(quartzJobDTO.getJobName(), quartzJobDTO.getGroupName());
             scheduler.pauseJob(jobKey);
+            return ResUtils.success();
         } catch (SchedulerException e) {
             log.error("暂停任务异常" + e);
+            return ResUtils.failed();
         }
     }
 
@@ -75,12 +90,14 @@ public class QuartzJobServiceImpl implements QuartzJobService {
      @return void
      */
     @Override
-    public void resumeJob(QuartzJobDTO quartzJobDTO) {
+    public ResUtils resumeJob(QuartzJobDTO quartzJobDTO) {
         try {
             JobKey jobKey = new JobKey(quartzJobDTO.getJobName(), quartzJobDTO.getGroupName());
             scheduler.resumeJob(jobKey);
+            return ResUtils.success();
         } catch (SchedulerException e) {
             log.error("恢复任务异常" + e);
+            return ResUtils.failed();
         }
     }
 
@@ -92,13 +109,14 @@ public class QuartzJobServiceImpl implements QuartzJobService {
      @return void
      */
     @Override
-    public void runOnce(QuartzJobDTO quartzJobDTO) {
+    public ResUtils runOnce(QuartzJobDTO quartzJobDTO) {
         try {
-            JobKey jobKey = new JobKey(quartzJobDTO.getJobName(), quartzJobDTO.getGroupName());
-//            scheduler.triggerJob(jobKey);
+            // JobKey jobKey1 = new JobKey(quartzJobDTO.getJobName(), quartzJobDTO.getGroupName());
             scheduler.triggerJob(JobKey.jobKey(quartzJobDTO.getJobName(), quartzJobDTO.getGroupName()));
+            return ResUtils.success();
         } catch (SchedulerException e) {
             log.error("恢复任务异常" + e);
+            return ResUtils.failed();
         }
     }
 
@@ -110,7 +128,7 @@ public class QuartzJobServiceImpl implements QuartzJobService {
      @return void
      */
     @Override
-    public void updateJob(QuartzJobDTO quartzJobDTO) {
+    public ResUtils updateJob(QuartzJobDTO quartzJobDTO) {
         try {
             TriggerKey triggerKey = TriggerKey.triggerKey(quartzJobDTO.getJobName(), quartzJobDTO.getGroupName());
             CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
@@ -127,8 +145,10 @@ public class QuartzJobServiceImpl implements QuartzJobService {
 //            }
             // 按新的trigger重新设置job执行
             scheduler.rescheduleJob(triggerKey, trigger);
+            return ResUtils.success();
         } catch (Exception e) {
             log.error("更新任务失败", e);
+            return ResUtils.failed();
         }
     }
 
@@ -140,14 +160,16 @@ public class QuartzJobServiceImpl implements QuartzJobService {
      @return void
      */
     @Override
-    public void deleteJob(QuartzJobDTO quartzJobDTO) {
+    public ResUtils deleteJob(QuartzJobDTO quartzJobDTO) {
 
         try {
             scheduler.pauseTrigger(TriggerKey.triggerKey(quartzJobDTO.getJobName(), quartzJobDTO.getGroupName()));
             scheduler.unscheduleJob(TriggerKey.triggerKey(quartzJobDTO.getJobName(), quartzJobDTO.getGroupName()));
             scheduler.deleteJob(JobKey.jobKey(quartzJobDTO.getJobName(), quartzJobDTO.getGroupName()));
+            return ResUtils.success();
         } catch (SchedulerException e) {
             log.error("删除任务异常" + e);
+            return ResUtils.failed();
         }
     }
 
@@ -155,11 +177,13 @@ public class QuartzJobServiceImpl implements QuartzJobService {
      * 启动所有任务
      */
     @Override
-    public void startAllJobs() {
+    public ResUtils startAllJobs() {
         try {
             scheduler.start();
+            return ResUtils.success();
         } catch (SchedulerException e) {
             log.error("启动所有任务异常" + e);
+            return ResUtils.failed();
         }
     }
 
@@ -167,11 +191,13 @@ public class QuartzJobServiceImpl implements QuartzJobService {
      * 暂停所有任务
      */
     @Override
-    public void pauseAllJobs() {
+    public ResUtils pauseAllJobs() {
         try {
             scheduler.pauseAll();
+            return ResUtils.success();
         } catch (SchedulerException e) {
             log.error("启动所有任务异常" + e);
+            return ResUtils.failed();
         }
     }
 
@@ -179,11 +205,13 @@ public class QuartzJobServiceImpl implements QuartzJobService {
      * 恢复所有任务
      */
     @Override
-    public void resumeAllJobs() {
+    public ResUtils resumeAllJobs() {
         try {
             scheduler.resumeAll();
+            return ResUtils.success();
         } catch (SchedulerException e) {
             log.error("启动所有任务异常" + e);
+            return ResUtils.failed();
         }
     }
 
@@ -191,15 +219,22 @@ public class QuartzJobServiceImpl implements QuartzJobService {
      * 关闭所有任务
      */
     @Override
-    public void shutdownAllJobs() {
+    public ResUtils shutdownAllJobs() {
         try {
             if (!scheduler.isShutdown()) {
                 // 需谨慎操作关闭scheduler容器
                 // scheduler生命周期结束，无法再 start() 启动scheduler
                 scheduler.shutdown(true);
             }
+            return ResUtils.success();
         } catch (SchedulerException e) {
             log.error("启动所有任务异常" + e);
+            return ResUtils.failed();
         }
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

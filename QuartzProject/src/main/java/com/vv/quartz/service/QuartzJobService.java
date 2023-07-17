@@ -1,8 +1,7 @@
 package com.vv.quartz.service;
 
 import com.vv.quartz.pojo.QuartzJobDTO;
-
-import java.util.Map;
+import com.vv.util.ResUtils;
 
 /**
  * @program: WorkProject
@@ -16,72 +15,77 @@ public interface QuartzJobService {
      * @author kangwei
      * @date 2023-7-17
      * @param [clazzName, cronExp, quartzJobDTO]
-     @return void
+     @return com.vv.util.ResUtils
      */
-    void addJob(QuartzJobDTO quartzJobDTO);
+    ResUtils addJob(QuartzJobDTO quartzJobDTO);
 
     /***
      * @description 暂停任务
      * @author kangwei
      * @date 2023-7-17
      * @param [quartzJobDTO]
-     @return void
+     @return com.vv.util.ResUtils
      */
-    void pauseJob(QuartzJobDTO quartzJobDTO);
+    ResUtils pauseJob(QuartzJobDTO quartzJobDTO);
 
     /***
      * @description 恢复任务
      * @author kangwei
      * @date 2023-7-17
      * @param [quartzJobDTO]
-     @return void
+     @return com.vv.util.ResUtils
      */
-    void resumeJob(QuartzJobDTO quartzJobDTO);
+    ResUtils resumeJob(QuartzJobDTO quartzJobDTO);
 
     /*** 
      * @description 立即运行一次定时任务
      * @author kangwei
      * @date 2023-7-17
      * @param [quartzJobDTO]
-     @return void
+     @return com.vv.util.ResUtils
      */
-    void runOnce(QuartzJobDTO quartzJobDTO);
+    ResUtils runOnce(QuartzJobDTO quartzJobDTO);
 
     /***
      * @description 更新任务
      * @author kangwei
      * @date 2023-7-17
      * @param [quartzJobDTO, cronExp]
-     @return void
+     @return com.vv.util.ResUtils
      */
-    void updateJob(QuartzJobDTO quartzJobDTO);
+    ResUtils updateJob(QuartzJobDTO quartzJobDTO);
 
     /***
      * @description 删除任务
      * @author kangwei
      * @date 2023-7-17
      * @param [quartzJobDTO]
-     @return void
+     @return com.vv.util.ResUtils
      */
-    void deleteJob(QuartzJobDTO quartzJobDTO);
+    ResUtils deleteJob(QuartzJobDTO quartzJobDTO);
 
     /**
      * 启动所有任务
      */
-    void startAllJobs();
+    ResUtils startAllJobs();
 
     /**
      * 暂停所有任务
      */
-    void pauseAllJobs();
+    ResUtils pauseAllJobs();
 
     /**
      * 恢复所有任务
      */
-    void resumeAllJobs();
+    ResUtils resumeAllJobs();
 
-    /**
-     * 关闭所有任务
-     */
-    void shutdownAllJobs();
+    /***
+     * @description 关闭所有任务
+     * @param []
+     * @return com.vv.util.ResUtils
+     * @author
+     * @date 2023/7/17
+     **/
+
+    ResUtils shutdownAllJobs();
 }
