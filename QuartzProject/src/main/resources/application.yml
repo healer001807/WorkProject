@@ -11,9 +11,4 @@ spring:
     password: kmg681
     type: com.alibaba.druid.pool.DruidDataSource
 
-    #quartz
-  quartz:
-    properties:
-      org
-
 

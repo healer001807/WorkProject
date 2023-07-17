@@ -20,7 +20,7 @@ import java.util.Optional;
 public class InitAddressRedis {
 
     // boot3.0不要使用javax下的 @Resource,此注解无法注入，boot3用jakarta包下的 @Resource
-    @Autowired
+    @Resource
     private RedisTemplate redisTemplate;
     @Resource
     private AddressMapper addressMapper;
