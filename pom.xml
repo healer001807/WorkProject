@@ -21,6 +21,7 @@
         <module>AdminProject</module>
         <module>BusinessProject</module>
         <module>QuartzProject</module>
+        <module>Study</module>
     </modules>
     <properties>
         <java.version>17</java.version>
