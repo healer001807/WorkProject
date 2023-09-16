@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://####?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    username: ####
+    password: ####
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

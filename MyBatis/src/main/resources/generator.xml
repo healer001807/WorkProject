@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+    <context id="DB2Tables" defaultModelType="hierarchical" targetRuntime="MyBatis3">
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://120.48.53.93:3306/vv_work?serverTimezone=PRC"
+                        userId="root"
+                        password="kmg681">
+        </jdbcConnection>
+
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <!--javaBean-->
+        <javaModelGenerator targetPackage="com.kk.mybatis.entity"
+                            targetProject="D:\java\idea\wk\WorkProject\MyBatis\src\main\java">
+            <property name="enableSubPackages" value="false" />
+            <property name="trimStrings" value="true" />
+            <property name="constructorBased" value="true" />
+            <property name="constructorBased" value="false"/>
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="mapper"
+                         targetProject="D:\java\idea\wk\WorkProject\MyBatis\src\main\resources">
+            <property name="enableSubPackages" value="false" />
+        </sqlMapGenerator>
+
+        <javaClientGenerator type="XMLMAPPER"
+                             targetPackage="com.kk.mybatis.mapper"
+                             targetProject="D:\java\idea\wk\WorkProject\MyBatis\src\main\java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+        <table tableName="vv_work.t_coupon" domainObjectName="Coupon"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table>
+        <table tableName="vv_work.t_coupon_template" domainObjectName="CouponTemplate"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table>
+        <!--<table tableName="goods" domainObjectName="Goods"></table>
+        <table tableName="goods_images" domainObjectName="GoodsImages"></table>
+        <table tableName="goods_type" domainObjectName="GoodsType"></table>-->
+
+
+    </context>
+</generatorConfiguration>
