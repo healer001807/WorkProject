@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vv.mybatisflex.mapper.CouponMapper">
+    <select id="selectByPage" resultType="com.vv.mybatisflex.entity.Coupon" >
+        select *
+        from t_coupon ${qwSql} limit ${pageOffset}, ${pageSize}
+    </select>
+
+    <select id="selectByPage_COUNT" resultType="long">
+        select count(*) from t_coupon ${qwSql}
+    </select>
+</mapper>

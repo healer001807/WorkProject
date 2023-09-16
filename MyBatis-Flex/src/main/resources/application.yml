@@ -1,6 +1,10 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://####?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
-    username: ####
-    password: ####
+    url: jdbc:mysql://120.48.53.93:3306/vv_work?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: kmg681
+mybatis-flex:
+  mapper-locations: classpath*:/mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
