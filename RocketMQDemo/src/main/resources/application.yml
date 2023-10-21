@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: mq
+server:
+  port: 8887
+
+rocketmq: #mq
+  producer:
+    producerList:
+      - groupName: points-group
+        #        topicName: points-topic
+        producerId: points
+        namesrvAddr: 192.168.1.100:9876
+        maxMessageSize: 4096
+        sendMsgTimeOut: 3000
+        retryTimesWhenSendFailed: 2
+      - groupName: register-group
+        #        topicName: register-topic
+        producerId: register
+        namesrvAddr: 192.168.1.100:9876 #每一个生产者注入一个地址，目前地址一样，后续如果更改地址后，只需要更改相应配置文件
+        maxMessageSize: 4096
+        sendMsgTimeOut: 3000
+        retryTimesWhenSendFailed: 2
+
+
