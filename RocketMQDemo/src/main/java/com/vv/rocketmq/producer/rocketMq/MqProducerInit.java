@@ -7,14 +7,13 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
-import org.springframework.context.ApplicationEvent;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author kw
@@ -25,24 +24,27 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
-@Order(9)
-public class MqProducerInit implements ApplicationListener<ApplicationEvent> {
+public class MqProducerInit implements ApplicationListener<ApplicationReadyEvent> {
 
     @Resource
     private MqProducerConfig mqProducerConfig;
 
-    static Map<String, DefaultMQProducer> defaultMQProducerMap = new ConcurrentHashMap<>();
+    static Map<String, DefaultMQProducer> defaultMQProducerMap = new HashMap<>();
 
+    /**
+     * ApplicationReadyEvent
+     * @param event
+     */
     @Override
-    public void onApplicationEvent(ApplicationEvent event) {
+    public void onApplicationEvent(ApplicationReadyEvent event) {
         List<MqProducer> producers = mqProducerConfig.getProducerList();
         if (CollectionUtil.isEmpty(producers)) {
             log.info("rocket mq is empty");
             return;
         }
         for (MqProducer producer : producers) {
-            DefaultMQProducer defaultMQProducer = new DefaultMQProducer(producer.getGroupName());
-            defaultMQProducer.setInstanceName(producer.getProducerId());
+            DefaultMQProducer defaultMQProducer = new DefaultMQProducer();
+            defaultMQProducer.setProducerGroup(producer.getGroupName());
             defaultMQProducer.setNamesrvAddr(producer.getNamesrvAddr());
             defaultMQProducer.setVipChannelEnabled(false);
             defaultMQProducer.setSendMsgTimeout(producer.getSendMsgTimeOut());
@@ -50,12 +52,12 @@ public class MqProducerInit implements ApplicationListener<ApplicationEvent> {
             defaultMQProducer.setRetryTimesWhenSendAsyncFailed(producer.getRetryTimesWhenSendFailed());
             try {
                 defaultMQProducer.start();
+                defaultMQProducerMap.put(producer.getProducerId(), defaultMQProducer);
                 log.info("rocket mq start success[namesrvAddr]" + defaultMQProducer.getNamesrvAddr() + "[groupName]" + defaultMQProducer.getProducerGroup());
             } catch (MQClientException e) {
                 log.error("rocket mq start error[namesrvAddr]" + defaultMQProducer.getNamesrvAddr() + "[groupName]" + defaultMQProducer.getProducerGroup(), e);
                 throw new RuntimeException(e);
             }
-            defaultMQProducerMap.put(producer.getProducerId(), defaultMQProducer);
         }
     }
 }
