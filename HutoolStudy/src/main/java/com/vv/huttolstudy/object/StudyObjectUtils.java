@@ -2,6 +2,8 @@ package com.vv.huttolstudy.object;
 
 import cn.hutool.core.util.ObjUtil;
 
+import java.util.function.Supplier;
+
 /**
  * @author kw
  * @program WorkProject
@@ -37,10 +39,38 @@ public class StudyObjectUtils {
         return ObjUtil.compare(obj1, obj2);
     }
 
+    /**
+     * 判断obj1是否为null
+     * 如为null 返回默认值defaultValue
+     * obj1为空字符串（""）都不满足要求
+     *
+     * @param obj1
+     * @param defaultValue
+     * @param <T>
+     * @return
+     */
+    public static <T> T defaultIfNull(T obj1, T defaultValue) {
+        return ObjUtil.defaultIfNull(obj1, defaultValue);
+    }
+
+    /**
+     * 默认值用函数式编程代替
+     *
+     * @param obj1
+     * @param supplier
+     * @param <T>
+     * @return
+     */
+    public static <T> T defaultIfNullV1(T obj1, Supplier<T> supplier) {
+        return ObjUtil.defaultIfNull(obj1, supplier);
+    }
+
 
     public static void main(String[] args) {
         //System.out.println(equal("1", "0"));
         //System.out.println(compare("2", "2"));
+//        System.out.println(defaultIfNull(null, "1"));
+        System.out.println(defaultIfNullV1(null, () -> "2"));
 
     }
 }
