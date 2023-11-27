@@ -1,0 +1,7 @@
+#logging:
+#  level:
+#    root: debug
+#  pattern:
+   # file: [ %-5level ] %d{yyyy-MM-dd HH:mm:ss} %c [%thread] %m%n
+#  file:
+#    path: /logs/a.log

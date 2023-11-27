@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <!--
+    -5level:
+    ％d{HH:mm:ss.SSS}日期
+
+    -->
+    <property name="pattern" value="％d{HH:mm:ss.SSS} [％thread]％-5level％logger{36}-％msg％n "/>
+    <property name="logDir" value="/logs"/>
+
+    <appender name="console" value="ch.qos.logback.core.ConsoleAppender">
+        <!--控制输出流对象-->
+        <target>System.err</target>
+        <!--日志消息格式配置-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="file" value="ch.qos.logback.core.FileAppender">
+        <file>${logDir}/logback.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+    <appender name="html" value="ch.qos.logback.core.FileAppender">
+        <file>${logDir}/logback.html</file>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.classic.html.HTMLLayout"/>
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="rolling" value="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logDir}/rolling_logback.log</file>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <pattern>${pattern}</pattern>
+        </encoder>
+
+        <!--日志拆分和归档appender对象-->
+
+        <!--拆分规则-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"/>
+        <!--        <fileNamePattern>${logDir}/rolling.%d{yyyy-MM-dd-HH-mm-ss}.log-%i.gz</fileNamePattern>-->
+        <fileNamePattern>${logDir}/rolling.%d{yyyy-MM-dd}.log-%i.gz</fileNamePattern>
+        <maxFileSize>1MB</maxFileSize>
+    </appender>
+
+    <!--日志过滤-->
+    <filer class="ch.qos.logback.classic.filter.LevelFilter">
+        <level>error</level>
+        <onMatch>ACCEPT</onMatch>
+        <onMismatch>DENY</onMismatch>
+    </filer>
+
+    <!--异步日志-->
+    <appender name="rolling" value="ch.qos.logback.classic.AsyncAppender">
+        <!--可以更改-->
+        <appender-ref ref="console"/>
+    </appender>
+
+    <root level="All">
+        <!--引用-->
+        <appender-ref ref="console"/>
+        <!--        <appender-ref ref="file"/>-->
+        <!--        <appender-ref ref="html"/>-->
+        <!--        <appender-ref ref="rolling"/>-->
+    </root>
+
+    <!--自定义log对象 additivity:是否继承父对象-->
+    <logger name="com.kk" level="info" additivity="false">
+
+    </logger>
+</configuration>
