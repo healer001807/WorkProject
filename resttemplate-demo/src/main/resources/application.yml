@@ -1,0 +1,8 @@
+server:
+  port: 8881
+
+
+#本机暂时没有代理服务器
+#proxy:
+#  host:
+#  port:
