@@ -1,0 +1,5 @@
+#配置接口文档
+springdoc:
+  api-docs:
+    #配置扫描包
+    enabled: false

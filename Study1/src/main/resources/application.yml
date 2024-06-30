@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: sit
+#\u914D\u7F6E\u63A5\u53E3\u6587\u6863
+springdoc:
+  api-docs:
+    #\u914D\u7F6E\u626B\u63CF\u5305
+    enabled: true
