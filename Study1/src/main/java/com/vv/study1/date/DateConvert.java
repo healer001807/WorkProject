@@ -1,9 +1,6 @@
 package com.vv.study1.date;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -56,12 +53,23 @@ public class DateConvert {
         return localDateTime.format(DateTimeFormatter.ofPattern(pattern));
     }
 
+    /**
+     * 时间戳转date
+     *
+     * @param timestamp
+     * @return
+     */
+    public static Date timestampToDate(Long timestamp) {
+        return Date.from(Instant.ofEpochMilli(timestamp));
+    }
 
-//    public static void main(String[] args) {
+
+    public static void main(String[] args) {
 ////        System.out.println(dateToLocalDateTime(new Date()));
 ////        System.out.println(dateToLocalDate(new Date()));
 ////        System.out.println(dateToLocalTime(new Date()));
 //        System.out.println(dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));
-//    }
+        System.out.println(timestampToDate(new Date().getTime()));
+    }
 
 }
